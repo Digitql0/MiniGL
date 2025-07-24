@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/home/digitql/Projects/Active/MiniGL/build",
+  "command": "/usr/bin/c++  -I/home/digitql/Projects/Active/MiniGL/include -std=gnu++17 -o CMakeFiles/OpenGLProject.dir/src/MiniGL.cpp.o -c /home/digitql/Projects/Active/MiniGL/src/MiniGL.cpp",
+  "file": "/home/digitql/Projects/Active/MiniGL/src/MiniGL.cpp",
+  "output": "CMakeFiles/OpenGLProject.dir/src/MiniGL.cpp.o"
+},
+{
+  "directory": "/home/digitql/Projects/Active/MiniGL/build",
+  "command": "/usr/bin/cc  -I/home/digitql/Projects/Active/MiniGL/include -std=gnu17 -o CMakeFiles/OpenGLProject.dir/src/glad.c.o -c /home/digitql/Projects/Active/MiniGL/src/glad.c",
+  "file": "/home/digitql/Projects/Active/MiniGL/src/glad.c",
+  "output": "CMakeFiles/OpenGLProject.dir/src/glad.c.o"
+},
+{
+  "directory": "/home/digitql/Projects/Active/MiniGL/build",
+  "command": "/usr/bin/c++  -I/home/digitql/Projects/Active/MiniGL/include -std=gnu++17 -o CMakeFiles/OpenGLProject.dir/src/main.cpp.o -c /home/digitql/Projects/Active/MiniGL/src/main.cpp",
+  "file": "/home/digitql/Projects/Active/MiniGL/src/main.cpp",
+  "output": "CMakeFiles/OpenGLProject.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/digitql/Projects/Active/MiniGL/build",
+  "command": "/usr/bin/c++  -I/home/digitql/Projects/Active/MiniGL/include -std=gnu++17 -o CMakeFiles/OpenGLProject.dir/src/shader.cpp.o -c /home/digitql/Projects/Active/MiniGL/src/shader.cpp",
+  "file": "/home/digitql/Projects/Active/MiniGL/src/shader.cpp",
+  "output": "CMakeFiles/OpenGLProject.dir/src/shader.cpp.o"
+}
+]

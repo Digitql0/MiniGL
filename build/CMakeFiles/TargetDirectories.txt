@@ -1,0 +1,3 @@
+/home/digitql/Projects/Active/MiniGL/build/CMakeFiles/OpenGLProject.dir
+/home/digitql/Projects/Active/MiniGL/build/CMakeFiles/edit_cache.dir
+/home/digitql/Projects/Active/MiniGL/build/CMakeFiles/rebuild_cache.dir
