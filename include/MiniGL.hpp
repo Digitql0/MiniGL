@@ -15,7 +15,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void MakeWindow(int width, int height, const char *title);
 void drawRectangle(float posx, float posy, float width, float height, int r, int g, int b);
-void setPerspective(Perpsectives perspective);
+void setPerspective(Perspectives perspective);
 bool WindowShouldClose();
 void BeginDrawing();
 void ClearBackground(int r, int g, int b);
