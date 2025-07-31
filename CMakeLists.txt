@@ -16,6 +16,10 @@ add_library(MiniGL STATIC ${SOURCES})
 # Build as an Executable
 add_executable(MiniGLApp ${SOURCES})
 
+# Include header for MiniGLApp
+target_include_directories(MiniGLApp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(MiniGLApp PRIVATE MiniGL)
+
 # Include headers for anyone linking MiniGL
 target_include_directories(MiniGL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
