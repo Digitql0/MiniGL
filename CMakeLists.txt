@@ -14,7 +14,7 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 add_library(MiniGL STATIC ${SOURCES})
 
 # Build as an Executable
-add_executable(MiniGLApp STATIC ${SOURCES})
+add_executable(MiniGLApp ${SOURCES})
 
 # Include headers for anyone linking MiniGL
 target_include_directories(MiniGL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
