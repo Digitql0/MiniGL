@@ -5,40 +5,42 @@
 #include <sstream>
 #include <fstream>
 
+// Vertex shader source (simple pass-through)
+const char* vertexShaderSource = R"glsl(
+#version 330 core
+layout(location = 0) in vec2 aPos;
+
+uniform mat4 model;
+uniform mat4 projection;
+
+void main() {
+    gl_Position = projection * model * vec4(aPos, 0.0, 1.0);
+}
+)glsl";
+
+// Fragment shader source (uniform color)
+const char* fragmentShaderSource = R"glsl(
+#version 330 core
+out vec4 FragColor;
+
+uniform vec3 color;
+
+void main() {
+    FragColor = vec4(color, 1.0);
+}
+)glsl";
+
 Shader::Shader() {
 	std::cout << "SHADER LOL" << std::endl;
 } 
 
-void Shader::MakeShader(const char *vertexPath, const char *fragmentPath) {
-  std::string vertexCode;
-  std::string fragmentCode;
-  std::ifstream vShaderFile;
-  std::ifstream fShaderFile;
-
-  vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-  fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-  try {
-    vShaderFile.open(vertexPath);
-    fShaderFile.open(fragmentPath);
-    std::stringstream vShaderStream, fShaderStream;
-    vShaderStream << vShaderFile.rdbuf();
-    fShaderStream << fShaderFile.rdbuf();
-    vShaderFile.close();
-    fShaderFile.close();
-    vertexCode = vShaderStream.str();
-    fragmentCode = fShaderStream.str();
-  } catch (std::ifstream::failure e) {
-    std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
-  }
-  const char *vShaderCode = vertexCode.c_str();
-  const char *fShaderCode = fragmentCode.c_str();
-
+void Shader::MakeShader() {
   unsigned int vertex, fragment;
   int success;
   char infoLog[512];
 
   vertex = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertex, 1, &vShaderCode, NULL);
+  glShaderSource(vertex, 1, &vertexShaderSource, NULL);
   glCompileShader(vertex);
 
   glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
@@ -50,7 +52,7 @@ void Shader::MakeShader(const char *vertexPath, const char *fragmentPath) {
   }
 
   fragment = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragment, 1, &fShaderCode, NULL);
+  glShaderSource(fragment, 1, &fragmentShaderSource, NULL);
   glCompileShader(fragment);
 
   glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);

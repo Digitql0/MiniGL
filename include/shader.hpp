@@ -9,7 +9,7 @@ class Shader {
  public:
   unsigned int ID;
   Shader();
-  void MakeShader(const char *vertexPath, const char *fragmentPath);
+  void MakeShader();
   void use();
   void setBool(const std::string &name, bool value) const;
   void setInt(const std::string &name, int value) const;

@@ -14,7 +14,7 @@ int main() {
 		ClearBackground(255, 255, 255);
 
 		//std::cout << "Drawing Rectangle..." << std::endl;
-		drawRectangle(200.0f, 200.0f, 100.0f, 100.0f, 255, 0, 0);
+		drawRectangle(10, 10, 100.0f, 100.0f, 255, 0, 0);
 
 		//std::cout << "Ending Drawing..." << std::endl;
 		EndDrawing();

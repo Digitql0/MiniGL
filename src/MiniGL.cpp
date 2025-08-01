@@ -11,7 +11,7 @@
 // MY OWN LIBRARIES
 #include "shader.hpp"
 
-Perspectives p;
+Perspectives p = Perspectives::Orthograpic;
 int mousex = 0.0f;
 int mousey = 0.0f;
 unsigned int rectangleVAO;
@@ -21,8 +21,13 @@ int screenHeight;
 int screenWidth;
 char* screenTitle;
 float rectangleVertices[] = {
-    -0.5f, -0.5f, 0.5f, -0.5f, 0.5f,  0.5f,
-    -0.5f, -0.5f, 0.5f, 0.5f,  -0.5f, 0.5f,
+    0.0f, 0.0f,  // top-left
+    1.0f, 0.0f,  // top-right
+    1.0f, 1.0f,  // bottom-right
+
+    0.0f, 0.0f,  // top-left
+    1.0f, 1.0f,  // bottom-right
+    0.0f, 1.0f   // bottom-left
 };
 
 Shader myShader;
@@ -96,7 +101,7 @@ void MakeWindow(int width, int height, const char* title) {
   glfwSetup();
 
   std::cout << "1" << std::endl;
-  GLFWwindow* win = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+  GLFWwindow* win = glfwCreateWindow(800, 600, title, NULL, NULL);
 
   std::cout << "1" << std::endl;
   if (win == NULL) {
@@ -135,8 +140,7 @@ void MakeWindow(int width, int height, const char* title) {
   std::cout << "1" << std::endl;
   frame = win;
 
-  myShader.MakeShader("../shaders/vertex_shader.glsl",
-                      "../shaders/fragment_shader.glsl");
+  myShader.MakeShader();
 
   std::cout << "1" << std::endl;
   initializeRectangleVAO();
