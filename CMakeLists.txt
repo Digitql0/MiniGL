@@ -15,7 +15,17 @@ list(REMOVE_ITEM LIB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 add_library(MiniGL STATIC ${LIB_SOURCES})
 target_include_directories(MiniGL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# PACKAGES
+find_package(glfw3 REQUIRED)
+target_link_libraries(MiniGL PUBLIC glfw)
+
+if(UNIX)
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(MiniGL PUBLIC OpenGL::GL dl m pthread)
+endif()
+
 set(APP_SOURCES src/main.cpp)
+
 
 # Build as an Executable
 add_executable(MiniGLApp ${APP_SOURCES})
