@@ -22,11 +22,14 @@ extern unsigned int rectangleVAO;
 extern const size_t rectangleVertexCount;
 extern unsigned int circleVAO;
 extern unsigned int circleSegments;
+extern unsigned int lineVAO;
+extern const size_t lineVertexCount;
 extern GLFWwindow* frame;
 extern int screenHeight;
 extern int screenWidth;
 extern char* screenTitle;
 extern float rectangleVertices[];
+extern float lineVertices[];
 extern Shader myShader;
 
 #endif

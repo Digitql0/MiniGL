@@ -13,6 +13,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void MakeWindow(int width, int height, const char *title);
 void drawRectangle(float posx, float posy, float width, float height, int r, int g, int b);
 void drawCircle(float posx, float posy, float radius, int r, int g, int b, Anchor anchor = Anchor::Center);
+void drawLine(float x1, float y1, float x2, float y2, int r, int g, int b);
+void lineWidth(float width);
 void setPerspective(Perspectives perspective);
 bool WindowShouldClose();
 void BeginDrawing();
@@ -24,5 +26,6 @@ void GLADSetup();
 void processInput(GLFWwindow* window);
 void initializeRectangleVAO();
 void initializeCircleVAO(int segments = 32);
+void initializeLineVAO();
 
 #endif //MINIGL_HPP

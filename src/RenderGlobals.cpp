@@ -6,6 +6,7 @@ int mousey = 0;
 unsigned int rectangleVAO = 0;
 unsigned int circleVAO = 0;
 unsigned int circleSegments = 0;
+unsigned int lineVAO = 0;
 GLFWwindow* frame = nullptr;
 int screenHeight = 800;
 int screenWidth = 600;
@@ -14,6 +15,9 @@ char* screenTitle = (char*)"My Window";
 float rectangleVertices[] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
                              0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
 
+float lineVertices[] = {0.0f, 0.0f, 1.0f, 0.0f};
+
 const size_t rectangleVertexCount = sizeof(rectangleVertices) / sizeof(float);
+const size_t lineVertexCount = sizeof(lineVertices) / sizeof(float);
 
 Shader myShader;

@@ -52,6 +52,30 @@ void drawCircle(float posx, float posy, float radius, int r, int g, int b,
   glBindVertexArray(0);
 }
 
+void drawLine(float x1, float y1, float x2, float y2, int r, int g, int b) {
+  glm::vec3 rgb = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f);
+  myShader.setVec3("color", rgb);
+
+  glm::vec2 from(x1, y1);
+  glm::vec2 to(x2, y2);
+
+  glm::vec2 dir = to - from;
+  float length = glm::length(dir);
+  float angle = atan2(dir.y, dir.x);
+
+  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::translate(model, glm::vec3(from, 0.0f));
+  model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+  model = glm::scale(model, glm::vec3(length, 1.0f, 1.0f));
+  myShader.setMat4("model", model);
+
+  glBindVertexArray(lineVAO);
+  glDrawArrays(GL_LINES, 0, 2);
+  glBindVertexArray(0);
+}
+
+void lineWidth(float width) { glLineWidth(width); }
+
 void BeginDrawing() {
   processInput(frame);
   myShader.use();
@@ -145,6 +169,7 @@ void MakeWindow(int width, int height, const char* title) {
   std::cout << "1" << std::endl;
   initializeRectangleVAO();
   initializeCircleVAO();
+  initializeLineVAO();
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -208,4 +233,21 @@ void initializeCircleVAO(int segments) {
 
   circleVAO = vao;
   circleSegments = segments;
+}
+
+void initializeLineVAO() {
+  unsigned int vbo, vao;
+
+  glGenVertexArrays(1, &vao);
+  glGenBuffers(1, &vbo);
+
+  glBindVertexArray(vao);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, lineVertexCount * sizeof(float), lineVertices,
+               GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  lineVAO = vao;
 }
