@@ -1,36 +1,15 @@
-#include <iostream>
-
 #include "MiniGL.hpp"
 
+#include <iostream>
+#include <vector>
+
 // Mathematics
+#include "RenderGlobals.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-
-// MY OWN LIBRARIES
 #include "shader.hpp"
-
-Perspectives p = Perspectives::Orthograpic;
-int mousex = 0.0f;
-int mousey = 0.0f;
-unsigned int rectangleVAO;
-unsigned int rectangleVBO;
-GLFWwindow* frame;
-int screenHeight;
-int screenWidth;
-char* screenTitle;
-float rectangleVertices[] = {
-    0.0f, 0.0f,  // top-left
-    1.0f, 0.0f,  // top-right
-    1.0f, 1.0f,  // bottom-right
-
-    0.0f, 0.0f,  // top-left
-    1.0f, 1.0f,  // bottom-right
-    0.0f, 1.0f   // bottom-left
-};
-
-Shader myShader;
 
 void setPerspective(Perspectives perspective) { p = perspective; }
 
@@ -50,18 +29,39 @@ void drawRectangle(float posx, float posy, float width, float height, int r,
 
   glBindVertexArray(rectangleVAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
+  glBindVertexArray(0);
+}
+
+void drawCircle(float posx, float posy, float radius, int r, int g, int b,
+                Anchor anchor) {
+  if (anchor == Anchor::TopLeft) {
+    posx += radius;
+    posy += radius;
+  }
+
+  glm::vec3 rgb = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f);
+  myShader.setVec3("color", rgb);
+
+  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::translate(model, glm::vec3(posx, posy, 0.0f));
+  model = glm::scale(model, glm::vec3(radius, radius, 1.0f));
+  myShader.setMat4("model", model);
+
+  glBindVertexArray(circleVAO);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, circleSegments + 2);
+  glBindVertexArray(0);
 }
 
 void BeginDrawing() {
   processInput(frame);
   myShader.use();
 
-  if (p == Orthograpic) {
+  if (p == Perspectives::Orthographic) {
     glm::mat4 projection = glm::mat4(1.0f);
     projection =
         glm::ortho(0.0f, float(screenWidth), float(screenHeight), 0.0f);
     myShader.setMat4("projection", projection);
-  } else if (p == Perspective) {
+  } else if (p == Perspectives::Perspective) {
     glm::mat4 projection = glm::mat4(1.0f);
     float fov = glm::radians(45.0f);
     float aspectRatio = 800.0f / 600.0f;
@@ -125,7 +125,7 @@ void MakeWindow(int width, int height, const char* title) {
   glfwSetScrollCallback(win, scroll_callback);
 
   std::cout << "1" << std::endl;
-  glEnable(GL_DEPTH_TEST);
+  glDisable(GL_DEPTH_TEST);
 
   std::cout << "1" << std::endl;
   screenHeight = height;
@@ -144,6 +144,7 @@ void MakeWindow(int width, int height, const char* title) {
 
   std::cout << "1" << std::endl;
   initializeRectangleVAO();
+  initializeCircleVAO();
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -164,8 +165,8 @@ void initializeRectangleVAO() {
   unsigned int VBO;
   glGenBuffers(1, &VBO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), rectangleVertices,
-               GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, rectangleVertexCount * sizeof(float),
+               rectangleVertices, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
@@ -173,5 +174,38 @@ void initializeRectangleVAO() {
   glBindVertexArray(0);
 
   rectangleVAO = VAO;
-  rectangleVBO = VBO;
+}
+
+void initializeCircleVAO(int segments) {
+  std::vector<float> vertices;
+
+  // Center of the triangle fan
+  vertices.push_back(0.0f);
+  vertices.push_back(0.0f);
+
+  for (int i = 0; i <= segments; ++i) {
+    float angle = 2.0f * M_PI * i / segments;
+    vertices.push_back(std::cos(angle));
+    vertices.push_back(std::sin(angle));
+  }
+
+  unsigned int vao, vbo;
+
+  glGenVertexArrays(1, &vao);
+  glGenBuffers(1, &vbo);
+
+  glBindVertexArray(vao);
+
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
+               vertices.data(), GL_STATIC_DRAW);
+
+  // Assuming only position (x, y)
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  glBindVertexArray(0);
+
+  circleVAO = vao;
+  circleSegments = segments;
 }
