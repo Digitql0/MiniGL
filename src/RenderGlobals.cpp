@@ -1,23 +1,24 @@
 #include "RenderGlobals.hpp"
 
-Perspectives p = Perspectives::Orthographic;
-int mousex = 0;
-int mousey = 0;
-unsigned int rectangleVAO = 0;
-unsigned int circleVAO = 0;
-unsigned int circleSegments = 0;
-unsigned int lineVAO = 0;
-GLFWwindow* frame = nullptr;
-int screenHeight = 800;
-int screenWidth = 600;
-char* screenTitle = (char*)"My Window";
+Perspectives mgl_perspective = Perspectives::Orthographic;
+int mgl_mousex = 0;
+int mgl_mousey = 0;
+unsigned int mgl_rectangleVAO = 0;
+unsigned int mgl_circleVAO = 0;
+unsigned int mgl_circleSegments = 0;
+unsigned int mgl_lineVAO = 0;
+GLFWwindow* mgl_frame = nullptr;
+int mgl_screenHeight = 800;
+int mgl_screenWidth = 600;
+char* mgl_screenTitle = (char*)"My Window";
 
-float rectangleVertices[] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-                             0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
+float mgl_rectangleVertices[] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+                                 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
 
-float lineVertices[] = {0.0f, 0.0f, 1.0f, 0.0f};
+float mgl_lineVertices[] = {0.0f, 0.0f, 1.0f, 0.0f};
 
-const size_t rectangleVertexCount = sizeof(rectangleVertices) / sizeof(float);
-const size_t lineVertexCount = sizeof(lineVertices) / sizeof(float);
+const size_t mgl_rectangleVertexCount =
+    sizeof(mgl_rectangleVertices) / sizeof(float);
+const size_t mgl_lineVertexCount = sizeof(mgl_lineVertices) / sizeof(float);
 
-Shader myShader;
+Shader mgl_myShader;

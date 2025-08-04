@@ -4,9 +4,9 @@
 #include "RenderGlobals.hpp"
 #include <GLFW/glfw3.h>
 
-bool isKeyPressed(int key);
-bool isKeyReleased(int key);
-bool isKeyHeld(int key);
-void processInput(GLFWwindow* window);
+bool MGL_isKeyPressed(int key);
+bool MGL_isKeyReleased(int key);
+bool MGL_isKeyHeld(int key);
+void MGL_processInput(GLFWwindow* window);
 
 #endif

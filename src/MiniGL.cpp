@@ -1,3 +1,5 @@
 #include "MiniGL.hpp"
 
-void setPerspective(Perspectives perspective) { p = perspective; }
+void MGL_setPerspective(Perspectives perspective) {
+  mgl_perspective = perspective;
+}

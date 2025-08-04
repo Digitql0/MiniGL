@@ -8,19 +8,19 @@
 #include <vector>
 #include <iostream>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void MGL_framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void MGL_mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void MGL_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-void MakeWindow(int width, int height, const char *title);
-bool WindowShouldClose();
-void CloseWindow();
+void MGL_makeWindow(int width, int height, const char *title);
+bool MGL_windowShouldClose();
+void MGL_closeWindow();
 
-void glfwSetup();
-void GLADSetup();
+void MGL_glfwSetup();
+void MGL_gladSetup();
 
-void initializeRectangleVAO();
-void initializeCircleVAO(int segments = 32);
-void initializeLineVAO();
+void MGL_initializeRectangleVAO();
+void MGL_initializeCircleVAO(int segments = 32);
+void MGL_initializeLineVAO();
 
 #endif

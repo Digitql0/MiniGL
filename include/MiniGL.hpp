@@ -5,6 +5,6 @@
 #include "input.hpp"
 #include "window.hpp"
 
-void setPerspective(Perspectives perspective);
+void MGL_setPerspective(Perspectives perspective);
 
 #endif

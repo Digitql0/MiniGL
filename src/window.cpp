@@ -1,16 +1,16 @@
 #include "window.hpp"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void MGL_framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
+void MGL_mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {}
+void MGL_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {}
 
-void MakeWindow(int width, int height, const char* title) {
+void MGL_makeWindow(int width, int height, const char* title) {
   std::cout << "1" << std::endl;
-  glfwSetup();
+  MGL_glfwSetup();
 
   std::cout << "1" << std::endl;
   GLFWwindow* win = glfwCreateWindow(800, 600, title, NULL, NULL);
@@ -26,59 +26,59 @@ void MakeWindow(int width, int height, const char* title) {
   glfwMakeContextCurrent(win);
 
   std::cout << "1" << std::endl;
-  GLADSetup();
+  MGL_gladSetup();
 
   std::cout << "1" << std::endl;
   glViewport(0, 0, width, height);
 
   std::cout << "1" << std::endl;
-  glfwSetFramebufferSizeCallback(win, framebuffer_size_callback);
-  glfwSetCursorPosCallback(win, mouse_callback);
-  glfwSetScrollCallback(win, scroll_callback);
+  glfwSetFramebufferSizeCallback(win, MGL_framebuffer_size_callback);
+  glfwSetCursorPosCallback(win, MGL_mouse_callback);
+  glfwSetScrollCallback(win, MGL_scroll_callback);
 
   std::cout << "1" << std::endl;
   glDisable(GL_DEPTH_TEST);
 
   std::cout << "1" << std::endl;
-  screenHeight = height;
-  screenWidth = width;
+  mgl_screenHeight = height;
+  mgl_screenWidth = width;
 
   std::cout << "1" << std::endl;
-  screenTitle = (char*)malloc(strlen(title) + 1);
-  if (screenTitle != NULL) {
-    strcpy(screenTitle, title);
+  mgl_screenTitle = (char*)malloc(strlen(title) + 1);
+  if (mgl_screenTitle != NULL) {
+    strcpy(mgl_screenTitle, title);
   }
 
   std::cout << "1" << std::endl;
-  frame = win;
+  mgl_frame = win;
 
-  myShader.MakeShader();
+  mgl_myShader.MGL_makeShader();
 
   std::cout << "1" << std::endl;
-  initializeRectangleVAO();
-  initializeCircleVAO();
-  initializeLineVAO();
+  MGL_initializeRectangleVAO();
+  MGL_initializeCircleVAO();
+  MGL_initializeLineVAO();
 }
 
-bool WindowShouldClose() { return glfwWindowShouldClose(frame); }
+bool MGL_windowShouldClose() { return glfwWindowShouldClose(mgl_frame); }
 
-void CloseWindow() { glfwTerminate(); }
+void MGL_closeWindow() { glfwTerminate(); }
 
-void glfwSetup() {
+void MGL_glfwSetup() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
-void GLADSetup() {
+void MGL_gladSetup() {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD." << std::endl;
     exit(EXIT_FAILURE);
   }
 }
 
-void initializeRectangleVAO() {
+void MGL_initializeRectangleVAO() {
   unsigned int VAO;
   glGenVertexArrays(1, &VAO);
   glBindVertexArray(VAO);
@@ -86,18 +86,18 @@ void initializeRectangleVAO() {
   unsigned int VBO;
   glGenBuffers(1, &VBO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, rectangleVertexCount * sizeof(float),
-               rectangleVertices, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, mgl_rectangleVertexCount * sizeof(float),
+               mgl_rectangleVertices, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
   glBindVertexArray(0);
 
-  rectangleVAO = VAO;
+  mgl_rectangleVAO = VAO;
 }
 
-void initializeCircleVAO(int segments) {
+void MGL_initializeCircleVAO(int segments) {
   std::vector<float> vertices;
 
   // Center of the triangle fan
@@ -127,11 +127,11 @@ void initializeCircleVAO(int segments) {
 
   glBindVertexArray(0);
 
-  circleVAO = vao;
-  circleSegments = segments;
+  mgl_circleVAO = vao;
+  mgl_circleSegments = segments;
 }
 
-void initializeLineVAO() {
+void MGL_initializeLineVAO() {
   unsigned int vbo, vao;
 
   glGenVertexArrays(1, &vao);
@@ -139,11 +139,11 @@ void initializeLineVAO() {
 
   glBindVertexArray(vao);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, lineVertexCount * sizeof(float), lineVertices,
-               GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, mgl_lineVertexCount * sizeof(float),
+               mgl_lineVertices, GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
-  lineVAO = vao;
+  mgl_lineVAO = vao;
 }

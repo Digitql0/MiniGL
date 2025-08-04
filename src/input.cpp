@@ -1,9 +1,15 @@
 #include "input.hpp"
 
-bool isKeyPressed(int key) { return glfwGetKey(frame, key) == GLFW_PRESS; }
+bool MGL_isKeyPressed(int key) {
+  return glfwGetKey(mgl_frame, key) == GLFW_PRESS;
+}
 
-bool isKeyReleased(int key) { return glfwGetKey(frame, key) == GLFW_RELEASE; }
+bool MGL_isKeyReleased(int key) {
+  return glfwGetKey(mgl_frame, key) == GLFW_RELEASE;
+}
 
-bool isKeyHeld(int key) { return glfwGetKey(frame, key) == GLFW_REPEAT; }
+bool MGL_isKeyHeld(int key) {
+  return glfwGetKey(mgl_frame, key) == GLFW_REPEAT;
+}
 
-void processInput(GLFWwindow* window) {}
+void MGL_processInput(GLFWwindow* window) {}

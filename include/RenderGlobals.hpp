@@ -15,21 +15,21 @@ enum class Anchor {
 };
 
 // Declare globals using `extern`
-extern Perspectives p;
-extern int mousex;
-extern int mousey;
-extern unsigned int rectangleVAO;
-extern const size_t rectangleVertexCount;
-extern unsigned int circleVAO;
-extern unsigned int circleSegments;
-extern unsigned int lineVAO;
-extern const size_t lineVertexCount;
-extern GLFWwindow* frame;
-extern int screenHeight;
-extern int screenWidth;
-extern char* screenTitle;
-extern float rectangleVertices[];
-extern float lineVertices[];
-extern Shader myShader;
+extern Perspectives mgl_perspective;
+extern int mgl_mousex;
+extern int mgl_mousey;
+extern unsigned int mgl_rectangleVAO;
+extern const size_t mgl_rectangleVertexCount;
+extern unsigned int mgl_circleVAO;
+extern unsigned int mgl_circleSegments;
+extern unsigned int mgl_lineVAO;
+extern const size_t mgl_lineVertexCount;
+extern GLFWwindow* mgl_frame;
+extern int mgl_screenHeight;
+extern int mgl_screenWidth;
+extern char* mgl_screenTitle;
+extern float mgl_rectangleVertices[];
+extern float mgl_lineVertices[];
+extern Shader mgl_myShader;
 
 #endif
