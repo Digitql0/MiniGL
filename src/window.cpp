@@ -30,6 +30,9 @@ void MGL_makeWindow(int width, int height, const char* title) {
 
   std::cout << "1" << std::endl;
   glViewport(0, 0, width, height);
+  int fbWidth, fbHeight;
+  glfwGetFramebufferSize(win, &fbWidth, &fbHeight);
+  glViewport(0, 0, fbWidth, fbHeight);
 
   std::cout << "1" << std::endl;
   glfwSetFramebufferSizeCallback(win, MGL_framebuffer_size_callback);
