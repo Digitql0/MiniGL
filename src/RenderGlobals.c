@@ -11,6 +11,12 @@ GLFWwindow* mgl_frame = NULL;
 int mgl_screenHeight = 800;
 int mgl_screenWidth = 600;
 char* mgl_screenTitle = (char*)"My Window";
+vec2* mgl_translationHistory = NULL;
+size_t mgl_translationHistorySize = 0;
+vec2 mgl_currentTranslate = {0, 0};
+vec4 mgl_strokeColor = {255, 255, 255, 255};
+unsigned int mgl_strokeWidth = 1;
+vec4 mgl_fillColor = {0, 0, 0, 255};
 
 float mgl_rectangleVertices[] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
                                  0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};

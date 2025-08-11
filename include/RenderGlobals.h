@@ -24,5 +24,11 @@ extern char* mgl_screenTitle;
 extern float mgl_rectangleVertices[];
 extern float mgl_lineVertices[];
 extern unsigned int mgl_myShader;
+extern vec2* mgl_translationHistory;
+extern size_t mgl_translationHistorySize;
+extern vec2 mgl_currentTranslate;
+extern vec4 mgl_strokeColor;
+extern unsigned int mgl_strokeWidth;
+extern vec4 mgl_fillColor;
 
 #endif
