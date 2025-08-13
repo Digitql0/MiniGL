@@ -20,6 +20,7 @@ list(REMOVE_ITEM LIB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 add_library(MiniGL STATIC ${LIB_SOURCES})
 target_include_directories(MiniGL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(MiniGL PUBLIC cglm)
+add_compile_definitions(CGLM_USE_QUAT_ALIAS)
 
 # PACKAGES
 find_package(glfw3 REQUIRED)

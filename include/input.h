@@ -6,6 +6,6 @@
 int MGL_isKeyPressed(int key);
 int MGL_isKeyReleased(int key);
 int MGL_isKeyHeld(int key);
-void MGL_processInput(GLFWwindow* window);
+void MGL_setInputFunction(void (*func)(void));
 
 #endif

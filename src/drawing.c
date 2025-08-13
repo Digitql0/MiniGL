@@ -1,8 +1,9 @@
 #include "drawing.h"
 
-#include <stdlib.h>
-
 #include "RenderGlobals.h"
+#include "camera.h"
+#include "input.h"
+#include "shader.h"
 
 void MGL_drawRectangle(float posx, float posy, float width, float height) {
   vec3 rgb = {mgl_fillColor[0], mgl_fillColor[1], mgl_fillColor[2]};
@@ -23,11 +24,6 @@ void MGL_drawRectangle(float posx, float posy, float width, float height) {
 }
 
 void MGL_drawCircle(float posx, float posy, float radius) {
-  // if (anchor == TopLeft) {
-  //   posx += radius;
-  //   posy += radius;
-  // }
-
   vec3 rgb = {mgl_fillColor[0], mgl_fillColor[1], mgl_fillColor[2]};
   MGL_setVec3("color", &rgb);
 
@@ -50,9 +46,11 @@ void MGL_drawLine(float x1, float y1, float x2, float y2) {
   MGL_setVec3("color", &rgb);
 
   vec2 from = {x1, y1};
-  glm_vec2_add(from, mgl_currentTranslate, from);
+  from[0] += mgl_currentTranslate[0];
+  from[1] += mgl_currentTranslate[1];
   vec2 to = {x2, y2};
-  glm_vec2_add(to, mgl_currentTranslate, to);
+  to[0] += mgl_currentTranslate[0];
+  to[1] += mgl_currentTranslate[1];
 
   vec2 dir;
   glm_vec2_sub(to, from, dir);
@@ -66,8 +64,134 @@ void MGL_drawLine(float x1, float y1, float x2, float y2) {
   glm_scale(model, (vec3){length, 1.0f, 1.0f});
   MGL_setMat4("model", &model);
 
+  MGL_lineWidth(mgl_strokeWidth);
+
   glBindVertexArray(mgl_lineVAO);
   glDrawArrays(GL_LINES, 0, 2);
+  glBindVertexArray(0);
+}
+
+void MGL_drawDot(float x1, float y1) {
+  vec3 rgb = {mgl_strokeColor[0], mgl_strokeColor[1], mgl_strokeColor[2]};
+  MGL_setVec3("color", &rgb);
+
+  mat4 model;
+  glm_mat4_identity(model);
+  glm_translate(model, (vec3){x1, y1, 0.0f});
+  MGL_setMat4("model", &model);
+
+  MGL_setFloat("pointSize", mgl_strokeWidth);
+
+  glBindVertexArray(mgl_dotVAO);
+  glDrawArrays(GL_POINTS, 0, 1);
+  glBindVertexArray(0);
+}
+
+void MGL_drawCube(float posx, float posy, float posz, float width, float height,
+                  float depth) {
+  vec3 rgb = {mgl_fillColor[0], mgl_fillColor[1], mgl_fillColor[2]};
+  MGL_setVec3("color", &rgb);
+
+  posx += mgl_currentTranslate[0];
+  posy += mgl_currentTranslate[1];
+  posz += mgl_currentTranslate[2];
+
+  mat4 model;
+  glm_mat4_identity(model);
+  glm_translate(model, (vec3){posx, posy, posz});
+  glm_scale(model, (vec3){width, height, depth});
+  MGL_setMat4("model", &model);
+
+  glBindVertexArray(mgl_cubeVAO);
+  glDrawElements(GL_TRIANGLES, mgl_cubeIndexCount, GL_UNSIGNED_INT, 0);
+  glBindVertexArray(0);
+}
+
+void MGL_drawSphere(float posx, float posy, float posz, float radius) {
+  vec3 rgb = {mgl_fillColor[0], mgl_fillColor[1], mgl_fillColor[2]};
+  MGL_setVec3("color", &rgb);
+
+  posx += mgl_currentTranslate[0];
+  posy += mgl_currentTranslate[1];
+  posz += mgl_currentTranslate[2];
+
+  mat4 model;
+  glm_mat4_identity(model);
+  glm_translate(model, (vec3){posx, posy, posz});
+  glm_scale(model, (vec3){radius, radius, radius});
+  MGL_setMat4("model", &model);
+
+  glBindVertexArray(mgl_sphereVAO);
+  for (int i = 0; i < mgl_sphereRings; i++) {
+    glDrawElements(
+        GL_TRIANGLE_STRIP, (mgl_sphereSegments + 1) * 2, GL_UNSIGNED_INT,
+        (void*)(i * (mgl_sphereSegments + 1) * 2 * sizeof(unsigned int)));
+  }
+
+  glBindVertexArray(0);
+}
+
+void MGL_drawRay(float x1, float y1, float z1, float x2, float y2, float z2) {
+  vec3 rgb = {mgl_strokeColor[0], mgl_strokeColor[1], mgl_strokeColor[2]};
+  MGL_setVec3("color", &rgb);
+
+  vec3 from = {x1, y1, z1};
+  from[0] += mgl_currentTranslate[0];
+  from[1] += mgl_currentTranslate[1];
+  from[2] += mgl_currentTranslate[2];
+  vec3 to = {x2, y2, z2};
+  to[0] += mgl_currentTranslate[0];
+  to[1] += mgl_currentTranslate[1];
+  to[2] += mgl_currentTranslate[2];
+
+  // Get Direction Vector and Normalize it
+  vec3 dir;
+  glm_vec3_sub(to, from, dir);
+  float length = glm_vec3_norm(dir);
+  if (length == 0.0f) length = 1e-6f;
+  vec3 dirNormalized;
+  glm_vec3_normalize_to(dir, dirNormalized);
+
+  vec3 xAxis = {1.0f, 0.0f, 0.0f};
+  vec3 rotationAxis;
+  glm_vec3_cross(xAxis, dirNormalized, rotationAxis);
+  float dot = glm_vec3_dot(xAxis, dirNormalized);
+  float angle = acosf(dot);
+
+  mat4 model;
+  glm_mat4_identity(model);
+  glm_translate(model, from);  // Move Ray to Start Point
+
+  if (glm_vec3_norm(rotationAxis) < 1e-6f && dot <= 0) {
+    glm_rotate(model, M_PI, (vec3){0.0f, 1.0f, 0.0f});
+  } else {
+    glm_rotate(model, angle, rotationAxis);
+  }
+  glm_scale(model, (vec3){length, 1.0f, 1.0f});
+
+  MGL_setMat4("model", &model);
+
+  MGL_lineWidth(mgl_strokeWidth);
+
+  glBindVertexArray(mgl_rayVAO);
+  glDrawArrays(GL_LINES, 0, 2);
+  glBindVertexArray(0);
+}
+
+void MGL_drawPoint(float x1, float y1, float z1) {
+  vec3 rgb = {mgl_strokeColor[0], mgl_strokeColor[1], mgl_strokeColor[2]};
+  MGL_setVec3("color", &rgb);
+
+  mat4 model;
+  glm_mat4_identity(model);
+  glm_translate(model, (vec3){x1, y1, z1});
+  MGL_setMat4("model", &model);
+
+  MGL_setFloat("pointSize", mgl_strokeWidth);
+  printf("%f\n", mgl_strokeWidth);
+
+  glBindVertexArray(mgl_pointVAO);
+  glDrawArrays(GL_POINTS, 0, 1);
   glBindVertexArray(0);
 }
 
@@ -87,15 +211,16 @@ void MGL_fill(int r, int g, int b, int a) {
 
 void MGL_strokeWeight(unsigned int value) { mgl_strokeWidth = value; }
 
-void MGL_translate(int x, int y) {
+void MGL_translate(float x, float y, float z) {
   mgl_currentTranslate[0] += x;
   mgl_currentTranslate[1] += y;
+  mgl_currentTranslate[2] += z;
 }
 
 void MGL_push() {
   mgl_translationHistorySize++;
-  vec2* temp_ptr = realloc(mgl_translationHistory,
-                           sizeof(vec2) * mgl_translationHistorySize);
+  vec3* temp_ptr = realloc(mgl_translationHistory,
+                           sizeof(vec3) * mgl_translationHistorySize);
 
   if (temp_ptr == NULL) {
     printf("Translation Allocation Error");
@@ -105,7 +230,7 @@ void MGL_push() {
   mgl_translationHistory = temp_ptr;
 
   memcpy(&mgl_translationHistory[mgl_translationHistorySize - 1],
-         mgl_currentTranslate, sizeof(vec2));
+         mgl_currentTranslate, sizeof(vec3));
 }
 
 void MGL_pop() {
@@ -118,6 +243,8 @@ void MGL_pop() {
       mgl_translationHistory[mgl_translationHistorySize - 1][0];
   mgl_currentTranslate[1] =
       mgl_translationHistory[mgl_translationHistorySize - 1][1];
+  mgl_currentTranslate[2] =
+      mgl_translationHistory[mgl_translationHistorySize - 1][2];
 }
 
 void MGL_drawRectangleLegacy(float posx, float posy, float width, float height,
@@ -185,35 +312,33 @@ void MGL_drawLineLegacy(float x1, float y1, float x2, float y2, int r, int g,
 void MGL_lineWidth(float width) { glLineWidth(width); }
 
 void MGL_beginDrawing() {
-  MGL_processInput(mgl_frame);
-  MGL_use();
-
-  if (mgl_perspective == Orthographic) {
-    mat4 projection;
-    glm_ortho(0.0f, mgl_screenWidth, mgl_screenHeight, 0.0f, -1.0f, 1.0f,
-              projection);
-    MGL_setMat4("projection", &projection);
-  } else if (mgl_perspective == Perspective) {
-    mat4 projection;
-    glm_mat4_identity(projection);
-    float fov = glm_rad(45.0f);
-    float aspectRatio = 800.0f / 600.0f;
-    float nearPlane = 0.1f;
-    float farPlane = 100.0f;
-    glm_perspective(fov, aspectRatio, nearPlane, farPlane, projection);
-    MGL_setMat4("projection", &projection);
+  if (MGL_processInput != NULL) {
+    MGL_processInput();  // Compute Input
   }
+
+  MGL_use();  // Activate Shader
 
   mgl_currentTranslate[0] = 0;
   mgl_currentTranslate[1] = 0;
+  mgl_currentTranslate[2] = 0;
 }
+
+void MGL_activate2D() { glDisable(GL_DEPTH_TEST); }
+
+void MGL_activate3D() { glEnable(GL_DEPTH_TEST); }
 
 void MGL_clearBackground(int r, int g, int b) {
   glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void MGL_endDrawing() {
+  Camera* cam = MGLC_getCamera();
+  MGLC_updateMatrices(cam);
+
+  MGL_setMat4("projection", &cam->projection);
+  MGL_setMat4("view", &cam->view);
+
   glfwSwapBuffers(mgl_frame);
   glfwPollEvents();
 }

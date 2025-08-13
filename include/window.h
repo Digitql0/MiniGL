@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "RenderGlobals.h"
+#include "camera.h"
 
 void MGL_framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void MGL_mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -19,5 +20,11 @@ void MGL_gladSetup();
 void MGL_initializeRectangleVAO();
 void MGL_initializeCircleVAO(int segments);
 void MGL_initializeLineVAO();
+void MGL_initializeDotVAO();
+
+void MGL_initializeCubeVAO();
+void MGL_initializeSphereVAO(int rings, int segments);
+void MGL_initializeRayVAO();
+void MGL_initializePointVAO();
 
 #endif

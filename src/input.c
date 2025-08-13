@@ -16,4 +16,4 @@ int MGL_isKeyHeld(int key) {
   }
 }
 
-void MGL_processInput(GLFWwindow* window) {}
+void MGL_setInputFunction(void (*func)(void)) { MGL_processInput = func; }
