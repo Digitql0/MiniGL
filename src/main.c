@@ -1,8 +1,4 @@
 #include "MiniGL.h"
-#include "RenderGlobals.h"
-#include "camera.h"
-#include "drawing.h"
-#include "input.h"
 
 int x = 0;
 int y = 1;
@@ -50,71 +46,56 @@ void input() {
 }
 
 int main() {
+  MGL_makeWindow(1000, 1000, "Lol how did i do this");
   cam = MGLC_getCamera();
-  MGL_setInputFunction(input);
-
-  printf("Making Window...");
-  MGL_makeWindow(500, 500, "Lol how did i do this");
-
-  MGLC_hideMouse();
-
-  printf("Setting Line Width");
-  MGL_lineWidth(2.5);
-
-  printf("Entering Window Loop");
-
+  MGLC_setPerspective(Perspective, cam);
+  MGLC_setNearPlane(0.1f, cam);
+  MGLC_setFarPlane(1000.0f, cam);
+  float camPos[] = {0.0f, 0.0f, 100.0f};
+  MGLC_setPosition(camPos, cam);
   // MGLC_setZoom(1000, cam);
   oldMouse[0] = mgl_mousex;
   oldMouse[1] = mgl_mousey;
+  MGLC_setAspectRatio(mgl_screenWidth / mgl_screenHeight, cam);
 
-  MGLC_setPerspective(Perspective, cam);
-  MGLC_updatePositionLocal(0, 0, -30, cam);
+  MGL_setInputFunction(input);
+  MGL_lineWidth(2.5);
+
+  MGLC_hideMouse();
+
+  enableLight(1);
 
   while (!MGL_windowShouldClose()) {
     MGL_beginDrawing();
-    printf("Vertex floats: %zu\n", mgl_cubeVertexCount);
-    printf("Index count: %zu\n", mgl_cubeIndexCount);
-
+    glEnable(GL_DEPTH_TEST);
     MGL_clearBackground(0, 0, 0);
 
-    MGL_stroke(0, 0, 255, 255);
-    MGL_strokeWeight(5);
-    MGL_fill(0, 255, 0, 255);
-
-    // MGL_activate2D();
-    // MGL_drawRectangleLegacy(60, 60, 100.0f, 100.0f, 255 / 2, 255, 0);
-    // MGL_drawRectangleLegacy(10, 10, 100.0f, 100.0f, 255, 0, 0);
-    // MGL_drawCircleLegacy(10, 10, 100.0f, 255, 255, 0, Center);
-    // MGL_drawCircleLegacy(10, 10, 50.0f, 2, 255, 0, TopLeft);
-    // MGL_drawLineLegacy(0, 0, mgl_screenWidth, mgl_screenHeight, 255, 255,
-    // 255); MGL_drawLineLegacy(200, 50, 2, 680, 255, 0, 255);
-    // MGL_lineWidth(20);
-    // MGL_drawLineLegacy(0, 0, mgl_screenWidth, mgl_screenHeight, 255, 255,
-    // 255); MGL_drawCircle(0, 0, 20);
-
-    MGL_activate2D();
-    MGL_drawRectangle(0, 0, 50, 50);
-    MGL_drawCircle(100, 0, 50);
-    MGL_drawLine(200, 0, 250, 0);
-    MGL_drawDot(300, 0);
-
     MGL_activate3D();
-    MGL_drawCube(0, 100, 0, 50, 50, 50);
-    MGL_drawSphere(100, 100, 0, 50);
-    MGL_drawRay(200, 100, 0, 250, 100, 0);
-    MGL_drawPoint(300, 100, 0);
-
-    printf("Position: %f, %f, %f\n", cam->position[0], cam->position[1],
-           cam->position[2]);
-    printf("Rotation: %f, %f, %f\n", cam->rotation[0], cam->rotation[1],
-           cam->rotation[2]);
-    printf("Zoom: %f\n", cam->zoom);
+    glDisable(GL_CULL_FACE);
+    MGL_fill(255, 100, 100, 255);
+    
+    // Debug: Print camera info
+    printf("Camera pos: %f, %f, %f\n", cam->position[0], cam->position[1], cam->position[2]);
+    printf("Camera rot: %f, %f, %f\n", cam->rotation[0], cam->rotation[1], cam->rotation[2]);
+    printf("Near/Far: %f, %f\n", cam->nearPlane, cam->farPlane);
+    printf("FOV: %f\n", cam->fov);
+    printf("Projection matrix: %f, %f, %f, %f\n", cam->projection[0][0], cam->projection[0][1], cam->projection[0][2], cam->projection[0][3]);
+    printf("View matrix: %f, %f, %f, %f\n", cam->view[0][0], cam->view[0][1], cam->view[0][2], cam->view[0][3]);
+    
+    MGL_drawCube(0, 0, 0, 50, 50, 50);
+    glEnable(GL_CULL_FACE);
+    // drawLightObjects();
 
     MGL_endDrawing();
   }
 
-  printf("Closing Window...\n");
   MGL_closeWindow();
 
   return 0;
 }
+
+// printf("Position: %f, %f, %f\n", cam->position[0], cam->position[1],
+//        cam->position[2]);
+// printf("Rotation: %f, %f, %f\n", cam->rotation[0], cam->rotation[1],
+//        cam->rotation[2]);
+// printf("Zoom: %f\n", cam->zoom);

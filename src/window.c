@@ -1,8 +1,5 @@
 #include "window.h"
 
-#include "RenderGlobals.h"
-#include "camera.h"
-
 void MGL_framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
 }
@@ -30,9 +27,6 @@ void MGL_makeWindow(int width, int height, const char* title) {
   MGL_gladSetup();
 
   glViewport(0, 0, width, height);
-  // int fbWidth, fbHeight;
-  // glfwGetFramebufferSize(win, &fbWidth, &fbHeight);
-  // glViewport(0, 0, fbWidth, fbHeight);
 
   glfwSetFramebufferSizeCallback(win, MGL_framebuffer_size_callback);
   glfwSetCursorPosCallback(win, MGL_mouse_callback);
@@ -47,7 +41,15 @@ void MGL_makeWindow(int width, int height, const char* title) {
   }
 
   glEnable(GL_PROGRAM_POINT_SIZE);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CCW);
+  // glDisable(GL_BLEND);
+  // glDepthMask(GL_TRUE);
+  // glfwWindowHint(GLFW_DEPTH_BITS, 24);  // request a 24-bit depth buffer
 
+  // Initialize basic default Camera
   mgl_frame = win;
   Camera* cam = MGLC_getCamera();
   float pos[] = {mgl_screenWidth / 2, mgl_screenHeight / 2, 0.0f};
@@ -57,14 +59,19 @@ void MGL_makeWindow(int width, int height, const char* title) {
   MGLC_setFOV(45, cam);
   MGLC_setZoom(mgl_screenHeight / 2, cam);
   MGLC_setAspectRatio(mgl_screenWidth / mgl_screenHeight, cam);
-  MGLC_setNearPlane(-1.0f, cam);
-  MGLC_setFarPlane(1.0f, cam);
-  MGLC_setPerspective(Orthographic, cam);
+  MGLC_setNearPlane(0.1f, cam);
+  MGLC_setFarPlane(1000.0f, cam);
+  MGLC_setPerspective(Perspective, cam);
   MGLC_setSpeed(20.0f, cam);
   MGLC_setSensitivity(0.002f, cam);
 
-  MGL_makeShader();
+  // Make all Shaders
+  mgl_objectShaderID =
+      MGL_makeShader(mgl_vertexShaderSource, mgl_fragmentShaderSource);
+  mgl_lightObjectShaderID = MGL_makeShader(mgl_lightObjectVertexShaderSource,
+                                           mgl_lightObjectFragmentShaderSource);
 
+  // Initialize VAOs of all objects
   MGL_initializeRectangleVAO();
   MGL_initializeCircleVAO(32);
   MGL_initializeLineVAO();
@@ -75,7 +82,7 @@ void MGL_makeWindow(int width, int height, const char* title) {
   MGL_initializePointVAO();
 }
 
-bool MGL_windowShouldClose() { return glfwWindowShouldClose(mgl_frame); }
+int MGL_windowShouldClose() { return glfwWindowShouldClose(mgl_frame); }
 
 void MGL_closeWindow() { glfwTerminate(); }
 
@@ -201,6 +208,13 @@ void MGL_initializeCubeVAO() {
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, mgl_cubeVertexCount * sizeof(float),
                mgl_cubeVertices, GL_STATIC_DRAW);
+  // position attribute
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  // normal attribute
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+                        (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
 
   unsigned int EBO;
   glGenBuffers(1, &EBO);
@@ -208,9 +222,6 @@ void MGL_initializeCubeVAO() {
   glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                mgl_cubeIndexCount * sizeof(unsigned int), mgl_cubeIndices,
                GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-  glEnableVertexAttribArray(0);
 
   glBindVertexArray(0);
 

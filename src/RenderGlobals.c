@@ -26,16 +26,51 @@ const size_t mgl_dotVertexCount = sizeof(mgl_dotVertices) / sizeof(float);
 
 // OPENGL DRAWING 3D
 float mgl_cubeVertices[] = {
-    -0.5f, -0.5f, 0.5f,  0.5f,  -0.5f, 0.5f,  0.5f,  0.5f,  0.5f,  -0.5f, 0.5f,
-    0.5f,  -0.5f, -0.5f, -0.5f, 0.5f,  -0.5f, -0.5f, 0.5f,  0.5f,  -0.5f, -0.5f,
-    0.5f,  -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f,  -0.5f, 0.5f,  0.5f,
-    -0.5f, 0.5f,  -0.5f, 0.5f,  -0.5f, -0.5f, 0.5f,  -0.5f, 0.5f,  0.5f,  0.5f,
-    0.5f,  0.5f,  0.5f,  -0.5f, -0.5f, 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,
-    0.5f,  -0.5f, -0.5f, 0.5f,  -0.5f, -0.5f, -0.5f, 0.5f,  0.5f,  -0.5f, 0.5f,
-    0.5f,  -0.5f, -0.5f, -0.5f, -0.5f, -0.5f};
+    // positions        // normals
+    // Back face (Z = -0.5) - CCW winding
+    -0.5f, -0.5f, -0.5f, 0.0f,  0.0f, -1.0f,
+    0.5f,  -0.5f, -0.5f, 0.0f,  0.0f, -1.0f,
+    0.5f,  0.5f,  -0.5f, 0.0f,  0.0f, -1.0f,
+    -0.5f, 0.5f,  -0.5f, 0.0f,  0.0f, -1.0f,
+    
+    // Front face (Z = 0.5) - CCW winding
+    -0.5f, -0.5f, 0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, 0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    0.5f,  -0.5f, 0.5f,  0.0f,  0.0f, 1.0f,
+    
+    // Left face (X = -0.5) - CCW winding
+    -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f,  -1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f,  0.5f,  -1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f,  -0.5f, -1.0f, 0.0f, 0.0f,
+    
+    // Right face (X = 0.5) - CCW winding
+    0.5f,  -0.5f, -0.5f, 1.0f,  0.0f, 0.0f,
+    0.5f,  0.5f,  -0.5f, 1.0f,  0.0f, 0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f,  0.0f, 0.0f,
+    0.5f,  -0.5f, 0.5f,  1.0f,  0.0f, 0.0f,
+    
+    // Bottom face (Y = -0.5) - CCW winding
+    -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+    0.5f,  -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+    0.5f,  -0.5f, 0.5f,  0.0f, -1.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f,  0.0f, -1.0f, 0.0f,
+    
+    // Top face (Y = 0.5) - CCW winding
+    -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f,  0.0f,
+    -0.5f, 0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+    0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+    0.5f,  0.5f,  -0.5f, 0.0f, 1.0f,  0.0f,
+};
 unsigned int mgl_cubeIndices[] = {
-    0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,  8,  9,  10, 10, 11, 8,
-    12, 13, 14, 14, 15, 12, 16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20};
+    0,  1,  2,  0,  2,  3,   // back
+    4,  5,  6,  4,  6,  7,   // front
+    8,  9,  10, 8,  10, 11,  // left
+    12, 13, 14, 12, 14, 15,  // right
+    16, 17, 18, 16, 18, 19,  // bottom
+    20, 21, 22, 20, 22, 23   // top
+};
 float mgl_rayVertices[] = {0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
 float mgl_pointVertices[] = {0.0f, 0.0f, 0.0f};
 unsigned int mgl_cubeVAO = 0;
@@ -51,16 +86,101 @@ unsigned int mgl_pointVAO = 0;
 const size_t mgl_pointVertexCount = sizeof(mgl_pointVertices) / sizeof(float);
 
 // OPENGL WINDOW
-GLFWwindow* mgl_frame = NULL;
+GLFWwindow *mgl_frame = NULL;
 int mgl_screenHeight = 0;
 int mgl_screenWidth = 0;
-char* mgl_screenTitle = (char*)"My Window";
+char *mgl_screenTitle = (char *)"My Window";
 void (*MGL_processInput)(void) = NULL;
 
 // IMMEDIATE-STYLE DRAWING
-vec3* mgl_translationHistory = NULL;
+vec3 *mgl_translationHistory = NULL;
 size_t mgl_translationHistorySize = 0;
 vec3 mgl_currentTranslate = {0, 0, 0};
 vec4 mgl_strokeColor = {255, 255, 255, 255};
 float mgl_strokeWidth = 1;
 vec4 mgl_fillColor = {0, 0, 0, 255};
+
+// RENDER VARIABLES
+unsigned int is2D = 0;
+
+// LIGHTING
+unsigned int mgl_lightEnabled = 0;
+pointLight light = {{100, 100, 100}, {5, 5, 5}, {1.0f, 1.0f, 1.0f}};
+
+// SHADERS
+unsigned int mgl_objectShaderID;
+unsigned int mgl_lightObjectShaderID = 0;
+const char *mgl_vertexShaderSource = R"glsl(
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+
+out vec3 FragPos;
+out vec3 Normal;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    // Normal = mat3(transpose(inverse(model))) * aNormal;
+    Normal = aNormal; // ignore model transform
+
+
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}
+)glsl";
+const char *mgl_fragmentShaderSource = R"glsl(
+#version 330 core
+out vec4 FragColor;
+
+in vec3 Normal;
+in vec3 FragPos;
+
+uniform vec3 lightPos;
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+
+void main()
+{    
+    // Original lighting code (commented out for debugging)
+    // ambient
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+
+    // diffuse
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    vec3 result = (ambient + diffuse) * objectColor;
+    FragColor = vec4(result, 1.0);
+}
+)glsl";
+const char *mgl_lightObjectVertexShaderSource = R"glsl(
+#version 330 core
+layout(location = 0) in vec3 aPos;
+
+uniform float pointSize;
+uniform mat4 model;
+uniform mat4 projection;
+uniform mat4 view;
+
+void main() {
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_PointSize = pointSize;
+}
+)glsl";
+const char *mgl_lightObjectFragmentShaderSource = R"glsl(
+#version 330 core
+out vec4 FragColor;
+
+uniform vec3 color;
+
+void main() {
+    FragColor = vec4(color, 1.0);
+}
+)glsl";

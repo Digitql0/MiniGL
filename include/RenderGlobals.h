@@ -1,10 +1,8 @@
 #ifndef RENDERGLOBALS_HPP
 #define RENDERGLOBALS_HPP
 
-#include "cglm/cglm.h"
-#include "cglm/quat.h"
-#include "input.h"
-#include "shader.h"
+#include <GLFW/glfw3.h>
+#include <cglm/cglm.h>
 
 typedef enum { Orthographic, Perspective } Perspectives;
 
@@ -25,6 +23,12 @@ typedef struct {
   mat4 projection;
   mat4 view;
 } Camera;
+
+typedef struct {
+  vec3 position;
+  vec3 dimensions;
+  vec3 lightColor;
+} pointLight;
 
 extern Camera camera;
 
@@ -78,5 +82,20 @@ extern vec3 mgl_currentTranslate;
 extern vec4 mgl_strokeColor;
 extern float mgl_strokeWidth;
 extern vec4 mgl_fillColor;
+
+// RENDER VARIABLES
+extern unsigned int is2D;
+
+// LIGHTING
+extern unsigned int mgl_lightEnabled;
+extern pointLight light;
+
+// SHADERS
+extern unsigned int mgl_objectShaderID;
+extern unsigned int mgl_lightObjectShaderID;
+extern const char* mgl_vertexShaderSource;
+extern const char* mgl_fragmentShaderSource;
+extern const char* mgl_lightObjectVertexShaderSource;
+extern const char* mgl_lightObjectFragmentShaderSource;
 
 #endif
